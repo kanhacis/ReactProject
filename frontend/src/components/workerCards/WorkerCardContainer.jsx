@@ -4,7 +4,7 @@ import WorkerCard from "./WorkerCard";
 
 const WorkerCardContainer = ({ data }) => {
   return (
-    <section className="w-full flex flex-wrap justify-evenly mt-4">
+    <section className="w-full flex flex-wrap justify-evenly mt-4 gap-5">
       {data.map((worker, index) => (
         <WorkerCard key={index} worker={worker} index={index} />
       ))}

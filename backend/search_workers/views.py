@@ -136,11 +136,11 @@ async def search_workers(
         filters.append(f"working_area_info.rate >= {min_rate}") 
     if max_rate is not None: 
         filters.append(f"working_area_info.rate <= {max_rate}") 
-    if rate_type:
+    if rate_type: 
         filters.append(f"working_area_info.rate_type = '{rate_type}'")
     if working_area_name:
         filters.append(f"working_area_info.name = '{working_area_name}'")
-    if gender:
+    if gender: 
         filters.append(f"profile.gender = '{gender}'")
     
     # Add default filter by current user city and user role should be Worker
@@ -155,7 +155,7 @@ async def search_workers(
     # If there are any filters, append them to the query
     if filters:
         get_workers_query += " WHERE " + " AND ".join(filters)
-    
+        
     # Add pagination (LIMIT and OFFSET) to distinct workers
     get_workers_query += f" GROUP BY users.id LIMIT {limit} OFFSET {page_no * limit}"
     

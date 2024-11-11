@@ -89,9 +89,9 @@ async def all_users(db: connection.MySQLConnection = Depends(get_db)):
     return result
 
 
-## POST Endpoint: Create user profile.
+## POST Endpoint: Create or Update user profile.
 @user_router.post("/profile/", status_code=status.HTTP_201_CREATED, tags=profile_tags)
-async def create_profile(
+async def create_or_update_profile(
     data: UserProfile,
     db: connection.MySQLConnection = Depends(get_db),
     current_user: UserResponse = Depends(get_current_user),
@@ -101,27 +101,83 @@ async def create_profile(
     try:
         # Check if the user profile already exists
         if profile_exists(cursor, current_user["id"]):
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT, detail="Profile already exists"
-            )
+            # Update profile logic from PATCH endpoint
+            cursor = db.cursor()
 
-        # Insert the new profile into the database
-        profile_id, affected_rows = insert_profile(cursor, current_user["id"], data)
+            # Prepare the update query, checking if the fields are provided
+            query = "UPDATE profile SET "
+            update_fields = []
+            update_values = []
+
+            if data.first_name and not data.first_name == "string":
+                update_fields.append("first_name = %s")
+                update_values.append(data.first_name)
+
+            if data.last_name and not data.last_name == "string":
+                update_fields.append("last_name = %s")
+                update_values.append(data.last_name)
+
+            if data.phone_number and not data.phone_number == "string":
+                update_fields.append("phone_number = %s")
+                update_values.append(data.phone_number)
+
+            if data.gender and not data.gender == "string":
+                update_fields.append("gender = %s")
+                update_values.append(data.gender)
+
+            if data.location and not data.location == "string":
+                update_fields.append("location = %s")
+                update_values.append(data.location)
+
+            if data.city and not data.city == "string":
+                update_fields.append("city = %s")
+                update_values.append(data.city)
+
+            if data.longitude and not data.longitude == "string":
+                update_fields.append("longitude = %s")
+                update_values.append(data.longitude)
+
+            if data.latitude and not data.latitude == "string":
+                update_fields.append("latitude = %s")
+                update_values.append(data.latitude)
+
+            if data.role and not data.role == "string":
+                update_fields.append("role = %s")
+                update_values.append(data.role)
+
+            # If no fields to update, raise an exception
+            if not update_fields:
+                return JSONResponse(
+                    content={"detail": "No fields provided for update"},
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Finalize query and execute
+            query += ", ".join(update_fields) + " WHERE user_id = %s"
+            update_values.append(current_user["id"])
+
+            cursor.execute(query, tuple(update_values))
+            db.commit()
+
+            return JSONResponse(content={"detail": "Profile updated successfully!"}, status_code=status.HTTP_200_OK)
+
+        # Insert the new profile into the database if it doesn't exist
+        last_row_id, affected_rows = insert_profile(cursor, current_user["id"], data)
 
         if affected_rows > 0:
             db.commit()
-            return {"profile_id": profile_id, "detail": "Profile created successfully"}
+            return {"detail": "Profile created successfully"}
         else:
-            raise HTTPException(
+            return JSONResponse(
+                content={"detail": "Failed to create profile"},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to create profile",
             )
 
     except Exception as e:
         db.rollback()  # Roll back transaction in case of any error
-        raise HTTPException(
+        return JSONResponse(
+            content={"detail": f"{str(e)}"},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while creating the profile: {str(e)}",
         )
 
 
@@ -340,12 +396,12 @@ async def switch_role(
         if curr_user_role == "Worker":
             switch_user_role(cursor, current_user, "User")
             db.commit()
-            return {"detail": "User profile switch to -User mode-"}
+            return JSONResponse(content={"detail": "Switch to User mode"}, status_code=status.HTTP_200_OK)
         else:
             switch_user_role(cursor, current_user, "Worker")
             db.commit()
-            return {"detail": "User profile switch to -Worker mode-"}
-
+            return JSONResponse(content={"detail": "Switch to Worker mode"}, status_code=status.HTTP_200_OK)
+    
     except Exception as e:
         db.rollback()
         raise HTTPException(
@@ -358,7 +414,6 @@ async def switch_role(
 @user_router.post("/contact/", status_code=status.HTTP_201_CREATED, tags=user_tags)
 async def contact(data: Contact, db: connection.MySQLConnection = Depends(get_db)):
     cursor = db.cursor()
-    
     try:
         create_message(cursor, data)
         db.commit()

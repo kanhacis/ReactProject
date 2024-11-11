@@ -1,3 +1,6 @@
+SHOW CREATE TABLE your_table_name;
+
+
 - Create users table -
 
 CREATE TABLE users (
@@ -72,3 +75,19 @@ CREATE TABLE working_area_info (
   KEY worker_id (worker_id),
   CONSTRAINT working_area_info_ibfk_1 FOREIGN KEY (worker_id) REFERENCES worker (id) ON DELETE CASCADE
 ) 
+
+
+- Create Rating table -
+
+CREATE TABLE ratings (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id int DEFAULT NULL,
+  stars int DEFAULT NULL,
+  worker_id int DEFAULT NULL,
+  UNIQUE KEY unique_user_worker_pair (user_id, worker_id),
+  KEY fk_worker_id (worker_id),
+  CONSTRAINT fk_worker_id FOREIGN KEY (worker_id) REFERENCES worker (id),
+  CONSTRAINT ratings_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id),
+  CONSTRAINT ratings_chk_1 CHECK ((stars between 1 and 5))
+) 
+ 

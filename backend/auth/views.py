@@ -14,7 +14,6 @@ auth_router = APIRouter(
     tags=["Authentication"]
 )
 
-
 bearer_scheme = HTTPBearer()
 
 

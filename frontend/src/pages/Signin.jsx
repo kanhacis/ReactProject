@@ -21,7 +21,7 @@ const Signin = () => {
         toast.error(result.detail);
       }
     } else {
-      navigate("/profile/");
+      navigate("/");
     }
   };
   

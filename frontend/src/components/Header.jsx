@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import useAuth from "../hooks/useAuth";
-
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setRole } from "../services/roles/roleSlice";
+import { selectUserRole } from "../services/roles/roleSelector";
+import switchRoleService from "../services/switchRoleService";
 
 const navigation = [
   { name: "Find workers", to: "/" },
@@ -11,23 +15,55 @@ const navigation = [
 ];
 
 const Header = () => {
-  const {logout} = useAuth();
+  const role = useSelector(selectUserRole);
+
+  const filteredNavigation =
+    role === "User"
+      ? navigation
+      : navigation.filter((item) => item.name !== "Find workers");
+
+  const dispatch = useDispatch();
+
+  const { logout } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isUserMode, setIsUserMode] = useState(true);
-  const access_token = localStorage.getItem("access_token");  
+  const [isUserMode, setIsUserMode] = useState(role === "User");
+  const access_token = localStorage.getItem("access_token");
+  const navigate = useNavigate();
 
-  const toggleMode = () => {
-    setIsUserMode((prevMode) => !prevMode);
+  const toggleMode = async () => {
+    try {
+      const response = await switchRoleService.switchRole();
+
+      if (role === "User") {
+        setIsUserMode("Worker");
+        dispatch(setRole("Worker"));
+        navigate("/profile/");
+      } else {
+        setIsUserMode("User");
+        dispatch(setRole("User"));
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
+  useEffect(() => {
+    setIsUserMode(role === "User");
+  }, [role]);
+
   const handleLogout = () => {
-    logout()
+    logout();
   };
 
   return (
     <>
-      <header className="absolute inset-x-0 top-0 z-50 bg-indigo-600 px-10 relative">
+      <header
+        className={`absolute inset-x-0 top-0 z-50 ${
+          role === "User" ? "bg-indigo-600" : "bg-green-600"
+        } px-10 relative`}
+      >
         <nav
           aria-label="Global"
           className="flex items-center justify-between p-6 lg:px-8"
@@ -50,7 +86,7 @@ const Header = () => {
           </div>
 
           <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
+            {filteredNavigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.to}
@@ -163,7 +199,10 @@ const Header = () => {
                         Profile
                       </Link>
                       <Link
-                        onClick={() =>{setMobileMenuOpen(false); handleLogout()}} // Close menu on click
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          handleLogout();
+                        }} // Close menu on click
                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         Sign out

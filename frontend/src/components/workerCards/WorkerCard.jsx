@@ -7,9 +7,10 @@ const WorkerCard = ({ index, worker }) => {
   const [showMore, setShowMore] = useState(false);
 
   return (
+    
     <div
       key={index}
-      className="w-full sm:w-[48%] md:w-[32%] lg:w-[30%] xl:w-[23%] min-w-[380px] border border-gray-300 rounded-lg p-4 mb-4 bg-white"
+      className="flex-grow w-full sm:w-[48%] md:w-[32%] lg:w-[30%] xl:w-[23%] min-w-[380px] border border-gray-300 rounded-lg p-4 bg-white"
     >
       {/* Profile Section */}
       <WorkerDetail worker={worker} />

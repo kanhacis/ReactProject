@@ -1,12 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import SubmitButton from "../components/buttons/SubmitButton";
 import contactService from "../services/contactService";
-
+import { selectUserRole } from "../services/roles/roleSelector";
 
 const Contact = () => {
+  const role = useSelector(selectUserRole);
   const {
     register,
     handleSubmit,
@@ -17,21 +19,27 @@ const Contact = () => {
   async function onSubmit(data) {
     const response = await contactService.contact(data);
     try {
-      if (response.status === 201){
-        toast.success(response.data.detail)
+      if (response.status === 201) {
+        toast.success(response.data.detail);
         reset();
       }
     } catch (error) {
-      toast.error(error.response.data.detail)
+      toast.error(error.response.data.detail);
     }
   }
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div className="test font-[sans-serif] max-w-6xl mx-auto relative rounded-lg py-6">
         <div className="grid lg:grid-cols-3 items-center">
           <div className="grid sm:grid-cols-2 gap-4 z-20 relative lg:left-16 max-lg:px-4">
-            <div className="flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
+            <div
+              className={`flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center ${
+                role === "User"
+                  ? "bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]" // Shadow for "User" role
+                  : "bg-green-600 shadow-[0_4px_15px_-3px_rgba(34,197,94,0.5)]" // Green shadow for other roles
+              }`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-7"
@@ -55,7 +63,13 @@ const Contact = () => {
                 123 Main Street, City, Country
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
+            <div
+              className={`flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center ${
+                role === "User"
+                  ? "bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]" // Shadow for "User" role
+                  : "bg-green-600 shadow-[0_4px_15px_-3px_rgba(34,197,94,0.5)]" // Green shadow for other roles
+              }`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-7 fill-blue-600"
@@ -72,7 +86,13 @@ const Contact = () => {
               </h4>
               <p className="text-sm text-gray-300 mt-2">+158 996 888</p>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
+            <div
+              className={`flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center ${
+                role === "User"
+                  ? "bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]" // Shadow for "User" role
+                  : "bg-green-600 shadow-[0_4px_15px_-3px_rgba(34,197,94,0.5)]" // Green shadow for other roles
+              }`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-7 fill-blue-600"
@@ -94,7 +114,13 @@ const Contact = () => {
               </h4>
               <p className="text-sm text-gray-300 mt-2">kanhap569@gmail.com</p>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
+            <div
+              className={`flex flex-col items-center justify-center rounded-lg w-full h-44 p-4 text-center ${
+                role === "User"
+                  ? "bg-indigo-600 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]" // Shadow for "User" role
+                  : "bg-green-600 shadow-[0_4px_15px_-3px_rgba(34,197,94,0.5)]" // Green shadow for other roles
+              }`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-7 fill-blue-600"
@@ -129,20 +155,18 @@ const Contact = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   {...register("email", {
-                      required: "Email is required!",
-                      pattern: {
-                        value:
-                          /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                        message: "Invalid email format!",
-                      },
-                    })}
+                    required: "Email is required!",
+                    pattern: {
+                      value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                      message: "Invalid email format!",
+                    },
+                  })}
                 />
                 {errors.email && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
-
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
 
                 <label
                   htmlFor="subject"
@@ -155,7 +179,7 @@ const Contact = () => {
                   id="subject"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Issue while login"
-                  {...register("subject", {required: "Subject is required!"})}
+                  {...register("subject", { required: "Subject is required!" })}
                 />
                 {errors.subject && (
                   <p className="text-red-600 text-sm mt-1">
@@ -174,16 +198,19 @@ const Contact = () => {
                   rows="6"
                   id="message"
                   className="w-full bg-gray-100 rounded-lg px-6 text-sm pt-3 outline-none"
-                  {...register("message", {required: "Message is required!"})}
+                  {...register("message", { required: "Message is required!" })}
                 ></textarea>
                 {errors.message && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.message.message}
-                    </p>
-                  )}
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.message.message}
+                  </p>
+                )}
 
                 {/* Include SubmitButton component */}
-                <SubmitButton isSubmitting={isSubmitting} text={"Send message"} />
+                <SubmitButton
+                  isSubmitting={isSubmitting}
+                  text={"Send message"}
+                />
               </div>
             </form>
           </div>
