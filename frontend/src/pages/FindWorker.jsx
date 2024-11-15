@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom";
 import WorkerCardContainer from "../components/workerCards/WorkerCardContainer";
 import workerService from "../services/workerService";
 import useAuth from "../hooks/useAuth";
-import Spinner from "../components/Spinner";
-import PuffLoader from "react-spinners/PuffLoader";
-
+import Loader from "../components/Loader";
 
 
 const FindWorker = () => {
@@ -48,7 +46,7 @@ const FindWorker = () => {
   return (
     <div className={`min-h-screen bg-gray-100 p-4 ${loading ? "flex justify-center items-center" : ""}`}>
     {loading ? (
-      <PuffLoader color="#000" size={60} />
+      <Loader />
     ) : (
       <WorkerCardContainer data={workersData} />
     )}

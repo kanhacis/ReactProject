@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      section {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      section .request-card {
+        margin: 1rem 0 0 1rem;
+        width: 400px;
+        height: auto;
+        border: 1px solid silver;
+        border-radius: 5px;
+
+        display: flex;
+        flex-direction: column;
+      }
+
+      section .request-card .user-details {
+        width: 92%;
+        border: 1px solid silver;
+        margin: 1rem;
+        padding: 1rem 0;
+      }
+
+      section .request-card .handle-request {
+        width: 92%;
+        border: 1px solid silver;
+        margin: 0 1rem 1rem 1rem;
+      }
+
+      button {
+        width: 100px;
+        color: white;
+        padding: 0.8rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      section .request-card .handle-request {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .reject {
+        background-color: red;
+        border: 1px solid rgb(155, 7, 7);
+      }
+      .accept {
+        background-color: green;
+        border: 1px solid rgb(2, 83, 2);
+      }
+
+      .image {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      img {
+        width: 80px;
+        height: 80px;
+        border: 1px solid silver;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div class="request-card">
+        <div class="user-details">
+          <div class="image">
+            <img src="" alt="afsdf" />
+            <h4>Kanha Patil</h4>
+            <p>Vijay nagar scheme no. 78, slice 4 Aranya nagar</p>
+            <p>Distance: 2.5km</p>
+          </div>
+        </div>
+
+        <div class="handle-request">
+          <button class="reject">Reject</button>
+          <button class="accept">Accept</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <div class="user-details">
+          <div class="image">
+            <img src="" alt="afsdf" />
+          </div>
+        </div>
+
+        <div class="handle-request">
+          <button class="reject">Reject</button>
+          <button class="accept">Accept</button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -34,16 +34,11 @@ const Header = () => {
   const toggleMode = async () => {
     try {
       const response = await switchRoleService.switchRole();
+      const currRole = response.data.detail.split(" ")[2];
 
-      if (role === "User") {
-        setIsUserMode("Worker");
-        dispatch(setRole("Worker"));
-        navigate("/profile/");
-      } else {
-        setIsUserMode("User");
-        dispatch(setRole("User"));
-        navigate("/");
-      }
+      setIsUserMode(currRole);
+      dispatch(setRole(currRole));
+      role === "User" ? navigate("/profile/") : navigate("/");
     } catch (error) {
       console.log(error.response);
     }
@@ -106,7 +101,7 @@ const Header = () => {
                   checked={isUserMode}
                   onChange={toggleMode}
                 />
-                <div className="block bg-gray-200 w-14 h-8 rounded-full"></div>
+                <div className={`block ${isUserMode ? 'bg-green-500' : 'bg-indigo-500'} w-14 h-8 rounded-full`}></div>
                 <div
                   className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${
                     isUserMode
