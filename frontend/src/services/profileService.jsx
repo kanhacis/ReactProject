@@ -15,7 +15,7 @@ const profileService = {
           },
         });
         // Set the user role in the local storage        
-        localStorage.setItem("role", data.role)
+        localStorage.setItem("role", data.role);
         return response;
       } else {
         return 401;

@@ -10,7 +10,7 @@ const WorkerCard = ({ index, worker }) => {
     
     <div
       key={index}
-      className="flex-grow w-full sm:w-[48%] md:w-[32%] lg:w-[30%] xl:w-[23%] min-w-[380px] border border-gray-300 rounded-lg p-4 bg-white"
+      className="worker-card flex-grow w-full sm:w-[48%] md:w-[32%] lg:w-[30%] xl:w-[23%] min-w-[380px] border border-gray-300 rounded-lg p-4 bg-white"
     >
       {/* Profile Section */}
       <WorkerDetail worker={worker} />

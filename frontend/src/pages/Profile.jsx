@@ -2,6 +2,7 @@ import { BiCurrentLocation } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import SubmitButton from "../components/buttons/SubmitButton";
 import addressService from "../services/addressService";
@@ -9,9 +10,15 @@ import profileService from "../services/profileService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setRole } from "../services/roles/roleSlice";
+import { selectUserRole } from "../services/roles/roleSelector";
+import WorkingAreaInfo from "../components/WorkingAreaInfo";
+import Label from "../components/Label";
 
 
 const Profile = () => {
+  const [newRole, setNewRole] = useState();
+  const currRole = useSelector(selectUserRole);  
+  
   const dispatch = useDispatch();
   const {
     register,
@@ -25,8 +32,8 @@ const Profile = () => {
       const response = await profileService.update_profile(data);
       if (response.status === 201 || response.status === 200) {
         toast.success(response.data.detail);
-        dispatch(setRole(data.role))
-        
+        dispatch(setRole(data.role));
+        localStorage.setItem("role", data.role);
       } else if (response === 401) {
         toast.warning("User not authorized");
       }
@@ -74,9 +81,11 @@ const Profile = () => {
         setValue("location", response.data.location);
         setValue("longitude", response.data.longitude);
         setValue("latitude", response.data.latitude);
+        setNewRole(response.data.role);
+        dispatch(setRole(response.data.role));
       } catch (error) {
         if (error.response.status === 404) {
-          toast.info(error.message);
+          console.log(error.message);
         } else {
           toast.error(error.message);
         }
@@ -86,11 +95,15 @@ const Profile = () => {
     handleProfileData();
   }, [accessToken]);
 
+  const handleRoleChange = (selectedRole) => {
+    setNewRole(selectedRole);
+  };
+
   return (
     <>
       <ToastContainer />
       <section className="dark:bg-gray-900 mt-10">
-        <div className="container flex flex-col items-center justify-center px-4 sm:px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div className="h-[87vh] flex justify-center items-center">
           <div className="w-full sm:w-3/4 md:w-3/4 lg:w-3/4 xl:w-1/2 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-4">
@@ -101,84 +114,49 @@ const Profile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* First Name */}
                   <div>
-                    <label
-                      htmlFor="first_name"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      First Name
-                    </label>
+                    <Label labelName={"First Name"} errors={errors.first_name} />
                     <input
                       type="text"
                       id="first_name"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="John"
                       {...register("first_name", {
-                        required: "First name is required!",
+                        required: "REQUIRED",
                       })}
                     />
-                    {errors.first_name && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.first_name.message}
-                      </p>
-                    )}
                   </div>
                   {/* Last Name */}
                   <div>
-                    <label
-                      htmlFor="last_name"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Last Name
-                    </label>
+                    <Label labelName={"Last Name"} errors={errors.last_name} />
                     <input
                       type="text"
                       id="last_name"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="Doe"
                       {...register("last_name", {
-                        required: "Last name is required!",
+                        required: "REQUIRED",
                       })}
                     />
-                    {errors.last_name && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.last_name.message}
-                      </p>
-                    )}
                   </div>
                 </div>
 
                 {/* Phone number */}
                 <div>
-                  <label
-                    htmlFor="phone_number"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Phone Number
-                  </label>
+                  <Label labelName={"Phone Number"} errors={errors.phone_number} />
                   <input
                     type="text"
                     id="phone_number"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="+91 9111715245"
                     {...register("phone_number", {
-                      required: "Phone number is required!",
+                      required: "REQUIRED",
                     })}
                   />
-                  {errors.phone_number && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.phone_number.message}
-                    </p>
-                  )}
                 </div>
 
                 {/* Gender */}
                 <div>
-                  <label
-                    htmlFor="gender"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Gender
-                  </label>
+                  <Label labelName={"Gender"} />
                   <select
                     id="gender"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -192,16 +170,12 @@ const Profile = () => {
 
                 {/* Role */}
                 <div>
-                  <label
-                    htmlFor="role"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Role
-                  </label>
+                  <Label labelName={"Role"} />
                   <select
                     id="role"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     {...register("role")}
+                    onChange={(e) => handleRoleChange(e.target.value)}
                   >
                     <option value="User">User</option>
                     <option value="Worker">Worker</option>
@@ -222,47 +196,27 @@ const Profile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* City */}
                   <div>
-                    <label
-                      htmlFor="city"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      City
-                    </label>
+                    <Label labelName={"City"} errors={errors.city} />
                     <input
                       type="text"
                       id="city"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="Indore"
-                      {...register("city", { required: "City is required!" })}
+                      {...register("city", { required: "REQUIRED" })}
                     />
-                    {errors.city && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.city.message}
-                      </p>
-                    )}
                   </div>
                   {/* Location */}
                   <div>
-                    <label
-                      htmlFor="location"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Location
-                    </label>
+                    <Label labelName={"Location"} errors={errors.location} />
                     <input
                       type="text"
                       id="location"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="Vijay nagar scheme no. 78"
                       {...register("location", {
-                        required: "Location is required!",
+                        required: "REQUIRED",
                       })}
                     />
-                    {errors.location && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.location.message}
-                      </p>
-                    )}
                   </div>
                 </div>
 
@@ -270,49 +224,29 @@ const Profile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Longitude */}
                   <div>
-                    <label
-                      htmlFor="longitude"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Longitude
-                    </label>
+                    <Label labelName={"Longitude"} errors={errors.longitude} />
                     <input
                       type="text"
                       id="longitude"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="-73.935242"
                       {...register("longitude", {
-                        required: "Longitude is required!",
+                        required: "REQUIRED",
                       })}
                     />
-                    {errors.longitude && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.longitude.message}
-                      </p>
-                    )}
                   </div>
                   {/* Latitude */}
                   <div>
-                    <label
-                      htmlFor="latitude"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Latitude
-                    </label>
+                    <Label labelName={"Latitude"} errors={errors.latitude} />
                     <input
                       type="text"
                       id="latitude"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       placeholder="40.730610"
                       {...register("latitude", {
-                        required: "Latitude is required!",
+                        required: "REQUIRED",
                       })}
                     />
-                    {errors.latitude && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.latitude.message}
-                      </p>
-                    )}
                   </div>
                 </div>
 
@@ -322,9 +256,17 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+        {newRole === "Worker" && (
+          <>
+          <WorkingAreaInfo  />
+          </>
+        )}
       </section>
     </>
   );
 };
 
 export default Profile;
+
+// 346

@@ -36,6 +36,13 @@ def login(data: Login, db: connection.MySQLConnection = Depends(get_db)):
 
     cursor.execute("SELECT * FROM users WHERE email=%s", (data.email,))
     result = cursor.fetchone()
+    role = None
+    try:
+        cursor.execute("SELECT role FROM profile WHERE user_id = %s", (result["id"],))
+        role = cursor.fetchall()
+        role = role[0]["role"]
+    except Exception as e:
+        print(e)
 
     if not result:
         return JSONResponse(content={"detail": "Email is not registered!"}, status_code=status.HTTP_404_NOT_FOUND)
@@ -44,6 +51,6 @@ def login(data: Login, db: connection.MySQLConnection = Depends(get_db)):
         return JSONResponse(content={"detail": "Incorrect password"}, status_code=status.HTTP_401_UNAUTHORIZED)
 
     access_token = create_access_token(data={"sub": result["email"], "id": result["id"]})
-    return JSONResponse(content={"email": data.email, "access_token": access_token, "token_type": "bearer", "detail": "Sing in successfully!", }, status_code=status.HTTP_200_OK)
+    return JSONResponse(content={"email": data.email, "access_token": access_token, "token_type": "bearer", "detail": "Sing in successfully!", "role": role}, status_code=status.HTTP_200_OK)
     
     

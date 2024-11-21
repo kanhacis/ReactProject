@@ -26,8 +26,8 @@ def insert_new_user(cursor, data):
 
 
 ## Helper function to get all users
-def list_all_users(cursor):
-    cursor.execute("SELECT * FROM users")
+def list_all_users(cursor): 
+    cursor.execute("SELECT * FROM users") 
     return cursor.fetchall() 
 
 

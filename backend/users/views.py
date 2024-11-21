@@ -197,7 +197,7 @@ async def view_profile(
             status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found"
         )
 
-    # Return the user profile
+    # Return the user profile data
     return result
 
 
@@ -389,10 +389,10 @@ async def switch_role(
     # Get the current user role
     user_role = get_curr_user_role(cursor, current_user)
 
-    # Change the user role in their profile table (Worker to User Or User to Worker)
-    curr_user_role = user_role[0]["role"]
-
     try:
+        # Change the user role in their profile table (Worker to User Or User to Worker)
+        curr_user_role = user_role[0]["role"]
+    
         if curr_user_role == "Worker":
             switch_user_role(cursor, current_user, "User")
             db.commit()
@@ -422,3 +422,13 @@ async def contact(data: Contact, db: connection.MySQLConnection = Depends(get_db
         db.rollback()
         return JSONResponse(content={"detail": f"Failed to send message: {str(e)}"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+
+## GET Endpoint: Get the user role
+@user_router.get("/get_role/", status_code=status.HTTP_200_OK)
+def get_role(db: connection.MySQLConnection = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+    if current_user:
+        cursor = db.cursor()
+        cursor.execute("SELECT role FROM profile WHERE id = %s", (current_user["id"],))
+        result = cursor.fetchone()
+        return result[0]
+    return JSONResponse(content={"detail": "User not found"}, status_code=status.HTTP_404_NOT_FOUND)

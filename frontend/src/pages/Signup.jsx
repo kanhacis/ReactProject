@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import userService from "../services/userService";
 import SubmitButton from "../components/buttons/SubmitButton";
+import Label from "../components/Label";
 
 
 const Signup = () => {
@@ -36,7 +37,7 @@ const Signup = () => {
       }
     }
   }
-
+  
   return (
     <>
       <ToastContainer />
@@ -52,19 +53,14 @@ const Signup = () => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your email
-                  </label>
+                  <Label labelName={"Your email"} errors={errors.email} />
                   <input
                     type="email"
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     {...register("email", {
-                      required: "Email is required!",
+                      required: "REQUIRED",
                       pattern: {
                         value:
                           /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -72,63 +68,38 @@ const Signup = () => {
                       },
                     })}
                   />
-                  {errors.email && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Password
-                  </label>
+                  <Label labelName={"Password"} errors={errors.password} />
                   <input
                     type="password"
                     id="password"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     {...register("password", {
-                      required: "Password is required!",
+                      required: "REQUIRED",
                       minLength: {
                         value: 4,
                         message: "Password must be at least 4 characters",
                       },
                     })}
                   />
-                  {errors.password && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.password.message}
-                    </p>
-                  )}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Confirm password
-                  </label>
+                  <Label labelName={"Confirm password"} errors={errors.confirmPassword} />
                   <input
                     type="password"
                     id="confirmPassword"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     {...register("confirmPassword", {
-                      required: "Please confirm your password!",
+                      required: "REQUIRED",
                       validate: (value) =>
                         value === password || "Passwords do not match",
                     })}
                   />
-                  {errors.confirmPassword && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.confirmPassword.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="flex items-start">

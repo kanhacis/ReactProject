@@ -7,6 +7,8 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./pages/Dashboard";
+
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
 
               <Route path="/signup/" element={<Signup />} />
 
+              <Route path="/dashboard/" element={<Dashboard />} />
+
               {/* Use ProtectedRoute for Profile page (redirects unauthenticated users to Signin) */}
               <Route
                 path="/profile/"
@@ -40,6 +44,8 @@ function App() {
                 }
               />
             </Route>
+
+            
           </Routes>
         </AuthProvider>
       </BrowserRouter>

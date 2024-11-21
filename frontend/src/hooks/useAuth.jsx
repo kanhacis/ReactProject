@@ -21,9 +21,13 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(data);
       
       if (response.status === 200) {
-        const { access_token, email } = response.data;
+        const { access_token, email, role } = response.data;
+        
         localStorage.setItem("access_token", access_token);
         setUser(email);
+        console.log(role);
+        
+        localStorage.setItem("role", role)
         setIsLoggedIn(true);
         return true;
       }

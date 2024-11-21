@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SubmitButton from "../components/buttons/SubmitButton";
 import useAuth from "../hooks/useAuth";
+import Label from "../components/Label";
 
 
 const Signin = () => {
@@ -20,7 +21,7 @@ const Signin = () => {
       } else {
         toast.error(result.detail);
       }
-    } else {
+    } else {      
       navigate("/");
     }
   };
@@ -40,19 +41,14 @@ const Signin = () => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your email
-                  </label>
+                  <Label labelName={"Your email"} errors={errors.email} />
                   <input
                     type="email"
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     {...register("email", {
-                      required: "Email is required!",
+                      required: "REQUIRED",
                       pattern: {
                         value:
                           /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -60,33 +56,18 @@ const Signin = () => {
                       },
                     })}
                   />
-                  {errors.email && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
                 </div>
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Password
-                  </label>
+                  <Label labelName={"Password"} errors={errors.password} />
                   <input
                     type="password"
                     id="password"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     {...register("password", {
-                      required: "Password is required!",
+                      required: "REQUIRED",
                     })}
                   />
-                  {errors.password && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.password.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -125,7 +106,7 @@ const Signin = () => {
                     to="/signup"
                     className="font-medium text-indigo-600 hover:underline dark:text-indigo-600"
                   >
-                    Sign up
+                    Sign up 
                   </Link>
                 </p>
               </form>

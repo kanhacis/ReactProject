@@ -5,100 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        * {
+        *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         section {
-            width: 100%;
+            margin-top: 5rem;
+        }
+
+        .profile-card {
+            width: 60%;
+            margin: 0 auto;
+            border: 1px solid white;
+            background-color: white;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+            padding: 1rem;
             display: flex;
-            justify-content: space-evenly;
             flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-
-        section .card {
-            margin-top: 1rem;
-            width: 48%;
-            border: 1px solid silver;
-            border-radius: 12px;
-            min-width: 400px;
-        }
-
-        section .card .profile {
-            margin: 0 1.5rem;
-            display: flex;
             justify-content: space-between;
         }
 
-        section .card .profile .image{
+        .user-details {
+            min-width: 420px;
+            width: 49%;
+            padding: 1rem;
+            background-color: whitesmoke;
+            display: flex;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.7rem;
+        }
+
+        .image {
             width: 150px;
             height: 150px;
-            border: 1px solid silver;
+            border: 1px solid white;
             border-radius: 75px;
-            margin: 1rem 0;
         }
 
-
-        section .card .profile .details {
-            width: 45%;
-            height: 100px;
-            border: 1px solid silver;
-            margin: 1rem 0;
+        .user-address {
+            min-width: 420px;
+            width: 49%;
+            padding: 1rem;
+            flex-grow: 1;
+            background-color: whitesmoke;
         }
 
-        section .card .working_info {
-            border: 1px solid silver;
-            width: 93%;
-            margin: 0 auto;
-        }
-
-        section .card .working_info .one {
-            margin: 1rem;
-            border: 1px solid silver;
-            width: auto;
-            height: 60px;
+        .card {
+            height: 100%;
+            background-color: white;
+            line-height: 1.7rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
     <section>
-        <div class="card">
-            <div class="profile">
-                <div class="image">
-                    
-                </div>
+        <div class="profile-card">
+            <div class="user-details">
+                <div class="image"></div>
 
-                <div class="details">
-                    
-                </div>
-            </div>
-
-            <div class="working_info">
-                <div class="one">
-
-                </div>
-
-                <div class="one">
-
-                </div>
-
-                <div class="one">
-
+                <div class="info">
+                    <h3>Name: Kanha Patil</h3>
+                    <p>Contact: +91 9111718745</p>
+                    <p>Gender: Male</p>
+                    <p>Role: Worker</p>
                 </div>
             </div>
-            <br>
-        </div>
 
-        <div class="card">
-            <div class="profile">
-                
+            <div class="user-address">
+                <div class="card">
+                    <h4>City: Indore</h4>
+                    <h4>Address: Vijay Nagar Scheme no. 78, Slice 4</h4>
+                    <h4>Longitude: -448785188</h4>
+                    <h4>Latitude: +7854.8774</h4>
+                </div>
             </div>
-
-            <div class="working_info"></div>
         </div>
     </section>
 </body>
 </html>
+
+
+
+
+
+
+
+
+<section className="mt-20">
+    <div className="bg-white shadow-lg rounded-lg p-6 max-w-4xl mx-auto flex flex-col space-y-6 md:space-y-0 md:flex-row md:justify-between">
+      {/* Left Section: Image and Basic Info */}
+      <div className="flex items-center justify-between space-x-6 w-full md:w-1/2">
+        {/* Profile Picture */}
+        <div className="flex-shrink-0">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Profile"
+            className="w-36 h-36 rounded-full object-cover border-2 border-gray-300"
+          />
+        </div>
+
+        {/* Basic Info */}
+        <div className="info">
+          <h3 className="text-lg font-bold text-gray-700">Name: Kanha Patil</h3>
+          <p className="text-sm text-gray-600 mt-2">Contact: +91 9111718745</p>
+          <p className="text-sm text-gray-600 mt-1">Gender: Male</p>
+          <p className="text-sm text-gray-600 mt-1">Role: Worker</p>
+        </div>
+      </div>
+
+      {/* Right Section: Address Details */}
+      <div className="bg-gray-100 p-4 rounded-lg w-full md:w-1/2">
+        <div className="h-full bg-white p-4 rounded-lg shadow-md">
+          <h4 className="text-md font-semibold text-gray-700">City: Indore</h4>
+          <p className="text-sm text-gray-600 mt-2">
+            Address: Vijay Nagar Scheme no. 78, Slice 4
+          </p>
+          <p className="text-sm text-gray-600 mt-2">Longitude: -448785188</p>
+          <p className="text-sm text-gray-600 mt-2">Latitude: +7854.8774</p>
+        </div>
+      </div>
+    </div>
+  </section>

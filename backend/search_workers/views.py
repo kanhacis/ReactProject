@@ -44,7 +44,11 @@ def serialize_workers(results):
 
 
 ## Function to get working area info for the retrieved workers
-def get_working_area_info(cursor, worker_ids):
+def get_working_area_info(cursor, worker_ids, user_filters):
+    filtre_str = ""
+    for i in user_filters:
+        filtre_str += " AND " + i 
+    
     get_working_area_query = f"""
         SELECT 
             users.email, 
@@ -69,7 +73,7 @@ def get_working_area_info(cursor, worker_ids):
         LEFT JOIN
             ratings ON worker.id = ratings.worker_id 
         WHERE 
-            users.id IN ({', '.join([str(id) for id in worker_ids])})
+            users.id IN ({', '.join([str(id) for id in worker_ids])}) {filtre_str}
         GROUP BY
             users.email, 
             profile.first_name, 
@@ -101,12 +105,12 @@ async def search_workers(
     limit: int = Query(10, description="Limit the number of workers returned", gt=0),  # Default limit to 10
     page_no: int = Query(0, description="Number of workers to skip", ge=0),  # Default offset to 0
     current_user: UserResponse = Depends(get_current_user)
-):
-    cursor = db.cursor(dictionary=True)
+):  
+    cursor = db.cursor(dictionary=True) 
     
     # Get current user city 
-    cursor.execute("SELECT city FROM profile WHERE user_id = %s", (current_user["id"],))
-    curr_user_result = cursor.fetchone()
+    cursor.execute("SELECT city FROM profile WHERE user_id = %s", (current_user["id"],)) 
+    curr_user_result = cursor.fetchone() 
     
     # Base query to get distinct workers
     get_workers_query = """
@@ -125,23 +129,30 @@ async def search_workers(
         JOIN 
             worker ON profile.id = worker.profile_id 
         JOIN 
-            working_area_info ON worker.id = working_area_info.worker_id
-    """
+            working_area_info ON worker.id = working_area_info.worker_id 
+    """ 
 
     # List to store filters 
     filters = [] 
 
+    # List to store users filters
+    user_filters = []
+    
     # Add optional filters for working area info
     if min_rate is not None: 
         filters.append(f"working_area_info.rate >= {min_rate}") 
     if max_rate is not None: 
         filters.append(f"working_area_info.rate <= {max_rate}") 
+        user_filters.append(f"working_area_info.rate <= {max_rate}")
     if rate_type: 
         filters.append(f"working_area_info.rate_type = '{rate_type}'")
+        user_filters.append(f"working_area_info.rate_type = '{rate_type}'")
     if working_area_name:
         filters.append(f"working_area_info.name = '{working_area_name}'")
+        user_filters.append(f"working_area_info.name = '{working_area_name}'")
     if gender: 
         filters.append(f"profile.gender = '{gender}'")
+        user_filters.append(f"profile.gender = '{gender}'")
     
     # Add default filter by current user city and user role should be Worker
     if curr_user_result:
@@ -161,16 +172,16 @@ async def search_workers(
     
     cursor.execute(get_workers_query)
     workers = cursor.fetchall()
-
+    
     # If no workers are found, return an empty list
     if not workers:
         return []
     
     # Extract worker ids to fetch working area info for each
     worker_ids = [worker['user_id'] for worker in workers]
-        
+            
     # Call get_working_area_info() function to get the workers working areas informations
-    working_areas = get_working_area_info(cursor, worker_ids)
+    working_areas = get_working_area_info(cursor, worker_ids, user_filters)
         
     # Call serialize_workers() function to format the results
     result = serialize_workers(working_areas)

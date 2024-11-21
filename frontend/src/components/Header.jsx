@@ -12,10 +12,11 @@ import switchRoleService from "../services/switchRoleService";
 const navigation = [
   { name: "Find workers", to: "/" },
   { name: "Contact", to: "/contact" },
+  { name: "Profile & Work Details", to: "/dashboard" },
 ];
 
 const Header = () => {
-  const role = useSelector(selectUserRole);
+  const role = localStorage.getItem("role")
 
   const filteredNavigation =
     role === "User"
@@ -57,7 +58,7 @@ const Header = () => {
       <header
         className={`absolute inset-x-0 top-0 z-50 ${
           role === "User" ? "bg-indigo-600" : "bg-green-600"
-        } px-10 relative`}
+        } px-10 relative sticky top-0`}
       >
         <nav
           aria-label="Global"
@@ -81,42 +82,61 @@ const Header = () => {
           </div>
 
           <div className="hidden lg:flex lg:gap-x-12">
-            {filteredNavigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.to}
-                className="text-sm font-semibold leading-6 text-white"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {filteredNavigation.map((item) =>
+              access_token ? (
+                <Link
+                  key={item.name}
+                  to={item.to}
+                  className="text-sm font-semibold leading-6 text-white"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <>
+                  {item.name != "Profile & Work Details" &&
+                    item.name != "Find workers" && (
+                      <Link
+                        key={item.name}
+                        to={item.to}
+                        className="text-sm font-semibold leading-6 text-white"
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                </>
+              )
+            )}
           </div>
 
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <label className="flex items-center cursor-pointer">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={isUserMode}
-                  onChange={toggleMode}
-                />
-                <div className={`block ${isUserMode ? 'bg-green-500' : 'bg-indigo-500'} w-14 h-8 rounded-full`}></div>
-                <div
-                  className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${
-                    isUserMode
-                      ? "transform translate-x-0"
-                      : "transform translate-x-6"
-                  }`}
-                ></div>
-              </div>
-              <span className="ml-3 text-sm font-semibold text-white">
-                {isUserMode ? "User Mode" : "Work Mode"}
-              </span>
-            </label>
-
             {access_token ? (
               <>
+                <label className="flex items-center cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={isUserMode}
+                      onChange={toggleMode}
+                    />
+                    <div
+                      className={`block ${
+                        isUserMode ? "bg-green-500" : "bg-indigo-500"
+                      } w-14 h-8 rounded-full`}
+                    ></div>
+                    <div
+                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${
+                        isUserMode
+                          ? "transform translate-x-0"
+                          : "transform translate-x-6"
+                      }`}
+                    ></div>
+                  </div>
+                  <span className="ml-3 text-sm font-semibold text-white">
+                    {isUserMode ? "User Mode" : "Work Mode"}
+                  </span>
+                </label>
+
                 <Link
                   to="/profile"
                   className="text-sm mt-1 font-semibold leading-6 text-white mx-2"
@@ -172,16 +192,20 @@ const Header = () => {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="space-y-2 py-6">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.to}
-                      onClick={() => setMobileMenuOpen(false)} // Close menu on click
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                  {navigation.map((item) =>
+                    access_token ? (
+                      <Link
+                        key={item.name}
+                        to={item.to}
+                        onClick={() => setMobileMenuOpen(false)} // Close menu on click
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      "kkj"
+                    )
+                  )}
                 </div>
                 <div className="py-6">
                   {access_token ? (
