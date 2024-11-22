@@ -19,7 +19,7 @@ from .services import (
     insert_working_area_info,
     get_working_area_info,
     check_worker_info,
-    delete_working_area_info,
+    delete_working_area_info_,
     create_worker_rating,
     fetch_worker_by_id,
     get_existing_request,
@@ -201,17 +201,17 @@ async def update_working_area_info(
 
 
 ## DELETE Endpoint: Delete working area info.
-@worker_router.delete(
+@worker_router.delete( 
     "/working_area_info/{id}",
     status_code=status.HTTP_200_OK,
     tags=worker_area_info_tags,
-)
+) 
 async def delete_working_area_info(
     id: int, db: connection.MySQLConnection = Depends(get_db)
 ):
     cursor = db.cursor()
 
-    affected_rows = delete_working_area_info(cursor, id)
+    affected_rows = delete_working_area_info_(cursor, id)
 
     if affected_rows == 0:
         raise HTTPException(

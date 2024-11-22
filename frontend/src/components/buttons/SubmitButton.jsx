@@ -1,10 +1,9 @@
 import React from "react";
 import Spinner from "../Spinner";
-import { useSelector } from "react-redux";
-import { selectUserRole } from "../../services/roles/roleSelector";
+
 
 const SubmitButton = ({ isSubmitting, text }) => {
-  const role = useSelector(selectUserRole);
+  const role = localStorage.getItem("role")
 
   return (
     <button
@@ -24,3 +23,4 @@ const SubmitButton = ({ isSubmitting, text }) => {
 export default SubmitButton;
 
 
+ 

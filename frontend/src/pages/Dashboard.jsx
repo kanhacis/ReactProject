@@ -9,17 +9,15 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
-  const [profileInfo, setProfileInfo] = useState(0);
+  const [profileInfo, setProfileInfo] = useState();
   
   const [workDetails, setWorkDetails] = useState();
   const { isLoggedIn } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/signin/");
-    } else if (profileInfo === 0) {
-      navigate("/profile/");
     }
   }, [isLoggedIn]);
 
@@ -30,6 +28,7 @@ const Dashboard = () => {
     } catch (error) {
       if (error.response.status === 404) {
         console.log(error.message);
+        navigate("/profile/")
       } else {
         toast.error(error.message);
       }
@@ -38,7 +37,7 @@ const Dashboard = () => {
 
   const handleWorkDetailsData = async () => {
     try {
-      const response = await workDetailService.workDetails();
+      const response = await workDetailService.getWorkDetails();
       setWorkDetails(response.data);
     } catch (error) {
       if (error.response.status === 404) {
@@ -58,28 +57,37 @@ const Dashboard = () => {
     alert(`Edit item: ${item.name}`);
   };
 
-  const handleDelete = (id) => {
-    alert(`Delete item with ID: ${id}`);
+  const handleDelete = async (id) => {    
+    try {
+      const response = await workDetailService.deleteWorkDetail(id);
+      if (response.status === 200){
+        handleWorkDetailsData();
+      } 
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer /> 
       <section className="mt-10 p-2">
-        {profileInfo ? <ProfileCard profileInfo={profileInfo} /> : "?"}
+        {profileInfo ? <ProfileCard profileInfo={profileInfo} /> : ""}
 
         {workDetails ? (
           <WorkingAreaDetails
             workDetails={workDetails}
             onEdit={handleEdit}
             onDelete={handleDelete}
-          />
-        ) : (
-          "?"
-        )}
+          /> 
+        ) : ( 
+          ""
+        )} 
       </section>
     </>
   );
 };
 
 export default Dashboard;
+
+

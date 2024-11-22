@@ -132,9 +132,6 @@ const Header = () => {
                       }`}
                     ></div>
                   </div>
-                  <span className="ml-3 text-sm font-semibold text-white">
-                    {isUserMode ? "User Mode" : "Work Mode"}
-                  </span>
                 </label>
 
                 <Link

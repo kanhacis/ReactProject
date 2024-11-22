@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import SubmitButton from "../components/buttons/SubmitButton";
 import contactService from "../services/contactService";
 import { selectUserRole } from "../services/roles/roleSelector";
+import Label from "../components/Label";
 
 const Contact = () => {
   const role = useSelector(selectUserRole);
@@ -143,68 +144,39 @@ const Contact = () => {
             </h2>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="max-w-md mx-auto space-y-3">
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your email
-                </label>
+               
+                <Label labelName={"Your email"} errors={errors.email} />
                 <input
                   type="email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   {...register("email", {
-                    required: "Email is required!",
+                    required: "REQUIRED",
                     pattern: {
                       value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                       message: "Invalid email format!",
                     },
                   })}
                 />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
 
-                <label
-                  htmlFor="subject"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Subject
-                </label>
+                <Label labelName={"Subject"} errors={errors.subject} />
                 <input
                   type="text"
                   id="subject"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Issue while login"
-                  {...register("subject", { required: "Subject is required!" })}
+                  {...register("subject", { required: "REQUIRED" })}
                 />
-                {errors.subject && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.subject.message}
-                  </p>
-                )}
 
-                <label
-                  htmlFor="message"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Message
-                </label>
+                <Label labelName={"Message"} errors={errors.message} />
                 <textarea
                   placeholder="I try many time to login but unable to login me, fix this"
                   rows="6"
                   id="message"
                   className="w-full bg-gray-100 rounded-lg px-6 text-sm pt-3 outline-none"
-                  {...register("message", { required: "Message is required!" })}
+                  {...register("message", { required: "REQUIRED" })}
                 ></textarea>
-                {errors.message && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.message.message}
-                  </p>
-                )}
 
                 {/* Include SubmitButton component */}
                 <SubmitButton

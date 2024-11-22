@@ -26,9 +26,9 @@ def insert_new_user(cursor, data):
 
 
 ## Helper function to get all users
-def list_all_users(cursor): 
-    cursor.execute("SELECT * FROM users") 
-    return cursor.fetchall() 
+def list_all_users(cursor):
+    cursor.execute("SELECT * FROM users")
+    return cursor.fetchall()
 
 
 ## Helper function to check if the user profile already exists
@@ -99,6 +99,7 @@ def switch_user_role(cursor, current_user, role):
         "UPDATE profile SET role = %s WHERE user_id = %s",
         (role, current_user["id"]),
     )
+
 
 ## Helper function to create message
 def create_message(cursor, data):

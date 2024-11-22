@@ -72,7 +72,7 @@ def check_worker_info(cursor, current_user, data):
  
 
 ## Helper function to delete working area information
-def delete_working_area_info(cursor, area_info_id: int):
+def delete_working_area_info_(cursor, area_info_id: int):
     cursor.execute("DELETE FROM working_area_info WHERE id = %s", (area_info_id,))
     return cursor.rowcount  # Returns the number of affected rows
 
@@ -141,6 +141,7 @@ def get_worker_request_status(cursor, request_id):
         "SELECT status FROM worker_requests WHERE id = %s", (request_id,)
     )
     return cursor.fetchall()
+
 
 ## Helper function to update worker_requests status
 def update_worker_request_status(cursor, request_id, response):

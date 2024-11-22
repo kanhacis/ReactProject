@@ -5,7 +5,7 @@ from .schemas import UserCreate, UserProfile, ProfileUpdate, UserResponse, Conta
 from mysql.connector import connection
 from auth.views import get_current_user
 from .utils import get_location
-from .services import (
+from .services import ( 
     email_exists,
     validate_password_length,
     insert_new_user,
@@ -17,8 +17,8 @@ from .services import (
     update_live_address,
     get_curr_user_role,
     switch_user_role,
-    create_message
-)
+    create_message,
+) 
 
 
 user_router = APIRouter()
@@ -159,7 +159,10 @@ async def create_or_update_profile(
             cursor.execute(query, tuple(update_values))
             db.commit()
 
-            return JSONResponse(content={"detail": "Profile updated successfully!"}, status_code=status.HTTP_200_OK)
+            return JSONResponse(
+                content={"detail": "Profile updated successfully!"},
+                status_code=status.HTTP_200_OK,
+            )
 
         # Insert the new profile into the database if it doesn't exist
         last_row_id, affected_rows = insert_profile(cursor, current_user["id"], data)
@@ -392,16 +395,22 @@ async def switch_role(
     try:
         # Change the user role in their profile table (Worker to User Or User to Worker)
         curr_user_role = user_role[0]["role"]
-    
+
         if curr_user_role == "Worker":
             switch_user_role(cursor, current_user, "User")
             db.commit()
-            return JSONResponse(content={"detail": "Switch to User mode"}, status_code=status.HTTP_200_OK)
+            return JSONResponse(
+                content={"detail": "Switch to User mode"},
+                status_code=status.HTTP_200_OK,
+            )
         else:
             switch_user_role(cursor, current_user, "Worker")
             db.commit()
-            return JSONResponse(content={"detail": "Switch to Worker mode"}, status_code=status.HTTP_200_OK)
-    
+            return JSONResponse(
+                content={"detail": "Switch to Worker mode"},
+                status_code=status.HTTP_200_OK,
+            )
+
     except Exception as e:
         db.rollback()
         raise HTTPException(
@@ -417,18 +426,29 @@ async def contact(data: Contact, db: connection.MySQLConnection = Depends(get_db
     try:
         create_message(cursor, data)
         db.commit()
-        return JSONResponse(content={"detail": "Message send successfully!"}, status_code=status.HTTP_201_CREATED)
+        return JSONResponse(
+            content={"detail": "Message send successfully!"},
+            status_code=status.HTTP_201_CREATED,
+        )
     except Exception as e:
         db.rollback()
-        return JSONResponse(content={"detail": f"Failed to send message: {str(e)}"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+        return JSONResponse(
+            content={"detail": f"Failed to send message: {str(e)}"},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
 
 ## GET Endpoint: Get the user role
-@user_router.get("/get_role/", status_code=status.HTTP_200_OK)
-def get_role(db: connection.MySQLConnection = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+@user_router.get("/get_role/", status_code=status.HTTP_200_OK, tags=user_tags)
+def get_role(
+    db: connection.MySQLConnection = Depends(get_db),
+    current_user: UserResponse = Depends(get_current_user),
+):
     if current_user:
         cursor = db.cursor()
         cursor.execute("SELECT role FROM profile WHERE id = %s", (current_user["id"],))
         result = cursor.fetchone()
         return result[0]
-    return JSONResponse(content={"detail": "User not found"}, status_code=status.HTTP_404_NOT_FOUND)
+    return JSONResponse(
+        content={"detail": "User not found"}, status_code=status.HTTP_404_NOT_FOUND
+    )

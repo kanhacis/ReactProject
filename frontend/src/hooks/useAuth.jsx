@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
         setUser(email);
         console.log(role);
         
-        localStorage.setItem("role", role)
+        localStorage.setItem("role", role.length > 0 ? role : "User")
         setIsLoggedIn(true);
         return true;
       }
